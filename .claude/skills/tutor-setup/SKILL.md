@@ -1,6 +1,6 @@
 ---
 name: tutor-setup
-description: First-run bootstrap for a fresh copy of this language-tutor template. Use ONCE, at the very beginning, when tracking/profile.json or curriculum/plan.md still contain TODO/<placeholder> text — it interviews the learner, fills in their profile and learning plan for the chosen language, creates the Obsidian vault (grammar book, index, template, forms references), sets the TTS language + grammar sources, and runs the validator. Do not use once the repo is already set up.
+description: First-run bootstrap for a fresh copy of this language-tutor template. Use ONCE, at the very beginning, when tracking/profile.json or curriculum/plan.md still contain TODO/<placeholder> text — it checks prerequisites (python3, and curl/file for audio), interviews the learner, fills in their profile and learning plan for the chosen language, creates the Obsidian vault (grammar book, index, template, forms references), sets the TTS language + grammar sources, and runs the validator. Do not use once the repo is already set up.
 ---
 
 # tutor-setup — bootstrap a fresh copy
@@ -11,6 +11,25 @@ or `curriculum/plan.md` still has `<TARGET LANGUAGE>` placeholders.
 
 Work through the steps in order. Keep it conversational and brief — one small batch of
 questions at a time, not a wall. Confirm before writing files.
+
+## Step 0 — Check prerequisites
+
+The tutor is just files, but the helper scripts need a few system tools. **All Python is
+standard-library only — there is nothing to pip/uv install.** Check what's present and
+offer to install anything missing (you're running on the learner's machine — ask before
+installing):
+
+- **`python3`** (3.8+) — required for the validator, rehearse app, and merge script.
+  Check `python3 --version`. If absent, offer to install (macOS: `brew install python`;
+  Debian/Ubuntu: `sudo apt install python3`; Windows: python.org installer or `winget
+  install Python.Python.3`).
+- **`curl`** and **`file`** — only for the `tutor-pronunciation` audio feature. Usually
+  preinstalled on macOS/Linux. On Windows, they exist in WSL or Git Bash. If missing and
+  the learner wants audio, offer to install; otherwise note that audio will be skipped.
+- **Obsidian** — for viewing the review vault (optional; the notes are plain Markdown).
+  Don't install it for them; just confirm whether they have it (affects Step 4).
+
+Report what's available in one line, install only what they approve, then continue.
 
 ## Step 1 — Interview
 

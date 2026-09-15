@@ -12,6 +12,22 @@ wired for **Claude** (`CLAUDE.md` + `.claude/skills/`).
 This repo is a **language-agnostic template**. Out of the box the tracking files and plan
 contain placeholders — the one-time **setup** step fills them in for your language.
 
+## Prerequisites
+
+Almost nothing — the tutor itself is just Markdown + JSON the AI reads. The only tools are
+for the optional helper scripts, and **all Python here is standard-library only (no pip /
+uv / lockfile to manage)**:
+
+| Tool | Needed for | Notes |
+| --- | --- | --- |
+| **Claude Code** | running the tutor | the AI agent that reads this repo |
+| **Python 3** (3.8+) | the progress validator, rehearse app, merge script | stdlib only — no packages to install |
+| **Obsidian** | viewing your review notes | optional; notes are plain Markdown you can read anywhere |
+| **curl** + **file** | the pronunciation audio script only | preinstalled on macOS/Linux; on Windows use WSL or Git Bash |
+
+`/tutor-setup` checks for these on first run and offers to install anything missing (it's
+running on your machine). If you skip the audio feature, you don't need `curl`/`file`.
+
 ## How it works
 
 1. Open Claude (Claude Code) **in this folder**.
