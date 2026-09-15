@@ -1,0 +1,47 @@
+{
+  "_about": "Who the learner is and why. The tutor reads this at the start of every session to keep things personal, relevant, and motivating. Rarely changes. >>> FILL THIS IN before your first session. <<<",
+  "name": "TODO — your name",
+  "native_languages": ["TODO — e.g. English (native)"],
+  "lesson_language": "TODO — e.g. Explain in English when needed; teach and practice in the target language.",
+  "target_language": "TODO — the language you are learning",
+  "current_level": "TODO — self-assessed level, e.g. 'Beginner / comfortable A1'.",
+  "history": "TODO — past attempts, what worked, what didn't. Why this system now.",
+  "primary_motivation": "TODO — the concrete goal that keeps you going (exam, move, family, work).",
+  "living_situation": {
+    "location": "TODO — where you live and how much exposure you get.",
+    "exposure": "TODO — how much of the target language you actually hear/use day to day.",
+    "key_behavioral_goal": "TODO — the one habit you want to build (e.g. actually speaking in low-stakes situations)."
+  },
+  "practical_context": [
+    "TODO — your #1 real-world use case for the language; the tutor anchors examples here.",
+    "TODO — family / people you talk about, so examples feel real.",
+    "TODO — how you learn best (e.g. 'grammar as explicit rules and tables', or 'examples first'). Set your explanation style here."
+  ],
+  "expected_difficulties": [
+    "TODO — sounds, word order, or grammar features you expect to find hard given your native language.",
+    "TODO — confidence/avoidance patterns to watch for."
+  ],
+  "constraints": {
+    "session_size": "Measure sessions by CONTENT, not minutes. A full session = warm-up + new words taught inside sentences + enough production that each new word is USED at least once + re-drilling the sticky ones.",
+    "new_words_per_session": "target ~8 (range 6-10, hard cap ~12); each used >=2x in production. Aim for an EVEN ~40-50/week — see CLAUDE.md and progress.json vocabulary tracker.",
+    "frequency": "TODO — how often you plan to study (daily recommended).",
+    "deadline": "TODO — any fixed deadline, or 'none fixed; steady progress'.",
+    "device": "TODO — laptop / phone / both."
+  },
+  "preferences": {
+    "tone": "Minimal and direct. NO praise, cheerleading, or filler — it's just more to read. State whether an answer is right or wrong, fix what's wrong, move on. (Adjust to taste.)",
+    "correction_style": "Show the correction INLINE using ~~wrongword~~ **rightword** (strike the wrong token, bold the fix right after it) so you see exactly what changed in place. Add a one-line reason. Mark fully-correct sentences with a leading check. When asked to translate FROM your native language, the tutor does NOT pre-supply the target word/form — that defeats the exercise; you ask if stuck.",
+    "prompt_batch_size": "In production, give a SMALL BATCH of ~3 sentences/prompts at a time. You answer the batch, the tutor corrects, then the next batch.",
+    "always_speak": "Sessions are text-based: you TYPE your answers as the in-session production. Each session ends with a small take-away aloud mission. A weekly voice conversation is the real spoken rep.",
+    "comprehensive_sentences": "Default to LONGER, multi-clause production sentences that COMBINE many systems at once, NOT short single-rule sentences — this is the main retention lever. Short drills are for a quick warm-up only.",
+    "new_situations": "Rotate contexts (work, weather, shopping, friends, city, ...) so examples stay fresh rather than anchoring everything on one topic."
+  },
+  "ai_setup": "Built for Claude (CLAUDE.md + .claude/skills). Any agent that can read this repo can be the tutor.",
+  "vault_path": "TODO — absolute path to your Obsidian language folder, set by the tutor-setup skill. e.g. /Users/you/Library/Mobile Documents/iCloud~md~obsidian/Documents/<vault>/<Language>",
+  "tts_lang": "TODO — Google TTS language code for the target language (e.g. no, de, es, fr, it), set by tutor-setup.",
+  "grammar_sources": [
+    "TODO — authoritative online grammar for the target language, set by tutor-setup.",
+    "TODO — a good dictionary URL.",
+    "TODO — a language-council / reference-standard site if one exists."
+  ]
+}

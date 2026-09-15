@@ -1,0 +1,46 @@
+{
+  "_about": "The live state of learning. The tutor MUST read this before a session and update it after. See TUTOR.md for the exact rules. Dates are ISO YYYY-MM-DD.",
+  "current": {
+    "stage": "STAGE 1 — A1: Everyday basics",
+    "unit": "1.1 — first unit of the plan",
+    "mode": "Fresh start. Set pacing from TUTOR.md. In the first 1-2 sessions, probe to confirm the learner's placement and adjust the starting unit if needed.",
+    "started_on": null,
+    "last_session_on": null,
+    "sessions_completed": 0,
+    "day_streak": 0
+  },
+  "_placement_note": "New learner — placement not yet assessed. In the first 1-2 sessions, probe to confirm level and adjust the starting unit accordingly.",
+  "vocabulary": {
+    "_about": "Vocabulary pace tracker. Goal: an EVEN intake, not bursts. Log new words introduced each session (a word counts only if the learner produced it >=2x). See TUTOR.md 'Vocabulary plan' for the rationale and research.",
+    "daily_target": 8,
+    "daily_range": [
+      6,
+      10
+    ],
+    "weekly_target": 45,
+    "hard_cap_per_session": 12,
+    "level_word_targets": {
+      "A1": 500,
+      "A2": 1500,
+      "B1": 2750
+    },
+    "baseline_known_estimate": 0,
+    "new_words_introduced_in_program": 0,
+    "session_log": [],
+    "notes": []
+  },
+  "levels": {
+    "reached_A1": false,
+    "reached_A2": false,
+    "reached_B1": false
+  },
+  "units_completed": [],
+  "_patterns_about": "GRAMMAR PATTERNS as Leitner items (box 1-5). These are the fault lines worth drilling; they never fully retire (cap at 5, still eligible for warm-ups). See .claude/skills/tutor-progress/SKILL.md.",
+  "_vocab_about": "VOCABULARY as Leitner items. id shape: 'target-language (english gloss)' so the rehearse app can split on '('. Settled items (box>=4, or box 3 idle 14+ days) retire from the active warm-up pool but stay here + in the forms references. See SKILL.md.",
+  "patterns": [],
+  "vocab": [],
+  "_weak_spots_about": "Recurring problems worth targeting. The tutor confirms or removes these as it observes actual performance, and adds new ones.",
+  "weak_spots": [],
+  "_notes_about": "Free-form notes the tutor wants to remember between sessions.",
+  "notes": []
+}

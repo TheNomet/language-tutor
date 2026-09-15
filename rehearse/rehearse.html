@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Language rehearsal</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel2:#1e232c; --line:#2a303a;
+    --fg:#e7ebf0; --muted:#8b95a5; --accent:#5b9dff; --good:#3ecf8e; --bad:#ff6b6b;
+    --gold:#f0c04a;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{
+    background:var(--bg); color:var(--fg);
+    font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    display:flex; flex-direction:column; align-items:center;
+    padding:24px 16px 60px;
+  }
+  .wrap{width:100%; max-width:620px}
+  header{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:14px; gap:12px; flex-wrap:wrap}
+  h1{font-size:20px; margin:0; font-weight:650; letter-spacing:.2px}
+  h1 .sub{color:var(--muted); font-weight:400; font-size:14px}
+  .stats{color:var(--muted); font-size:13px; font-variant-numeric:tabular-nums}
+  .stats b{color:var(--fg)}
+  .controls{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px}
+  .seg{display:flex; background:var(--panel); border:1px solid var(--line); border-radius:10px; overflow:hidden}
+  .seg button{background:transparent; border:0; color:var(--muted); padding:7px 12px; cursor:pointer; font-size:13px}
+  .seg button.on{background:var(--panel2); color:var(--fg)}
+  .seg button:not(:last-child){border-right:1px solid var(--line)}
+  select{background:var(--panel); color:var(--fg); border:1px solid var(--line); border-radius:10px; padding:7px 10px; font-size:13px}
+  #exportBtn{background:var(--panel); color:var(--muted); border:1px solid var(--line); border-radius:10px; padding:7px 12px; font-size:13px; cursor:pointer; margin-left:auto}
+  #exportBtn:hover{color:var(--fg)}
+
+  .card{background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:26px 22px; min-height:210px; display:flex; flex-direction:column; gap:16px}
+  .tag{display:inline-block; font-size:11px; text-transform:uppercase; letter-spacing:.8px; color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:2px 9px}
+  .tag.box1{color:var(--bad); border-color:#5a2a2a}
+  .tag.box2{color:var(--gold); border-color:#5a4a1f}
+  .tag.box3,.tag.box4,.tag.box5{color:var(--good); border-color:#245a41}
+  .promptrow{display:flex; align-items:center; gap:12px}
+  .prompt{font-size:30px; font-weight:640; line-height:1.2}
+  .prompt.no{color:var(--accent)}
+  .formlabel{color:var(--accent); font-weight:600}
+  .formcount{color:var(--muted); font-size:18px; font-weight:400}
+  .hint{color:var(--muted); font-size:14px}
+  .spk{background:var(--panel2); border:1px solid var(--line); color:var(--fg); border-radius:10px; width:44px; height:44px; font-size:19px; cursor:pointer; flex:0 0 auto}
+  .spk:active{transform:scale(.94)}
+
+  form{display:flex; gap:10px}
+  input[type=text]{flex:1; background:var(--panel2); border:1px solid var(--line); color:var(--fg); border-radius:12px; padding:14px 16px; font-size:20px; outline:none}
+  input[type=text]:focus{border-color:var(--accent)}
+  .btn{background:var(--accent); color:#06122a; border:0; border-radius:12px; padding:0 20px; font-size:16px; font-weight:650; cursor:pointer}
+  .btn.ghost{background:var(--panel2); color:var(--fg); border:1px solid var(--line)}
+
+  .verdict{font-size:15px; min-height:22px}
+  .verdict.good{color:var(--good)} .verdict.bad{color:var(--bad)}
+  .reveal{border-top:1px solid var(--line); padding-top:14px; display:none; flex-direction:column; gap:10px}
+  .reveal.show{display:flex}
+  .en-answer{font-size:15px; color:var(--muted)}
+  .en-answer b{color:var(--fg)}
+  .forms{display:flex; flex-direction:column; gap:6px}
+  .formrow{display:flex; align-items:center; gap:10px; font-size:17px}
+  .formrow .lbl{color:var(--muted); font-size:12px; min-width:130px}
+  .formrow .val{font-weight:560}
+  .formrow .formmark{margin-left:auto; font-size:14px; font-weight:600}
+  .formrow .formmark.good{color:var(--good)}
+  .formrow .formmark.bad{color:var(--bad)}
+  .miniplay{background:var(--panel2); border:1px solid var(--line); color:var(--fg); border-radius:8px; width:30px; height:30px; cursor:pointer; font-size:13px; flex:0 0 auto}
+  .note{color:var(--muted); font-size:13px; font-style:italic}
+  .rate{display:flex; gap:10px; margin-top:4px}
+  .rate button{flex:1; padding:10px; border-radius:10px; border:1px solid var(--line); background:var(--panel2); color:var(--fg); cursor:pointer; font-size:14px}
+  .rate .know{color:var(--good)} .rate .dunno{color:var(--bad)}
+  footer{color:var(--muted); font-size:12px; margin-top:16px; text-align:center; line-height:1.7}
+  kbd{background:var(--panel2); border:1px solid var(--line); border-radius:5px; padding:1px 6px; font-size:11px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Language <span class="sub">rehearsal</span></h1>
+    <div class="stats" id="stats"></div>
+  </header>
+
+  <div class="controls">
+    <div class="seg" id="mode">
+      <button data-mode="write" class="on">Write</button>
+      <button data-mode="forms" title="Type every form of the word; all correct = word known">Full forms</button>
+      <button data-mode="dictation">Listen &amp; write</button>
+      <button data-mode="recall">Flashcard</button>
+    </div>
+    <select id="cat">
+      <option value="all">All words</option>
+      <option value="noun">Nouns</option>
+      <option value="verb">Verbs</option>
+      <option value="adj">Adjectives</option>
+      <option value="word">Other (conj./q-words/numbers)</option>
+    </select>
+    <div class="seg" id="focus">
+      <button data-focus="weak" class="on" title="Spaced repetition: only items due today; answers update the boxes">Due for review</button>
+      <button data-focus="even" title="Practice mode: shows every word (ignores due-dates); answers still update the boxes">Even</button>
+    </div>
+    <button id="exportBtn" title="Download box progress to merge into progress.json">Export progress</button>
+  </div>
+
+  <div class="card">
+    <div><span class="tag" id="tag"></span></div>
+
+    <div class="promptrow">
+      <div class="prompt" id="prompt"></div>
+      <button class="spk" id="spk" title="Hear it" style="display:none">▶</button>
+    </div>
+    <div class="hint" id="hint"></div>
+
+    <form id="answerForm">
+      <input type="text" id="answer" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="type your answer…" />
+      <button class="btn" id="checkBtn" type="submit">Check</button>
+    </form>
+
+    <div class="verdict" id="verdict"></div>
+
+    <div class="reveal" id="reveal">
+      <div class="en-answer" id="enAnswer"></div>
+      <div class="forms" id="forms"></div>
+      <div class="note" id="note"></div>
+      <div class="rate" id="rate" style="display:none">
+        <button class="dunno" data-know="0">Didn't know</button>
+        <button class="know" data-know="1">Knew it</button>
+      </div>
+      <div><button class="btn ghost" id="nextBtn">Next &nbsp;›</button></div>
+    </div>
+  </div>
+
+  <footer>
+    <kbd>Enter</kbd> check / next &nbsp;·&nbsp; <kbd>Tab</kbd> hear the word &nbsp;·&nbsp; <kbd>Esc</kbd> reveal &amp; skip<br>
+    Audio is Google TTS (robot voice) with your browser's target-language voice as fallback.
+  </footer>
+</div>
+
+<script src="vocab.js"></script>
+<script>
+(function(){
+  "use strict";
+  const $ = s => document.querySelector(s);
+  const store = { get k(){return 'tutor-rehearse-boxes'},
+    load(){ try{return JSON.parse(localStorage.getItem(this.k))||{}}catch(e){return {}} },
+    save(o){ localStorage.setItem(this.k, JSON.stringify(o)) } };
+
+  // SRS interval schedule (days) by box — mirrors .claude/skills/tutor-srs/SKILL.md
+  // and progress.json. Box 5 recurs every ~16 days; nothing is ever retired.
+  const INTERVAL = {1:0, 2:1, 3:3, 4:7, 5:16};
+  const todayStr = () => new Date().toISOString().slice(0,10);
+  const daysBetween = (a,b) => Math.floor((Date.parse(b)-Date.parse(a))/86400000);
+
+  // Local review state per item: { box, last } where last = 'YYYY-MM-DD'.
+  // Merges the app's own progress over the seed baked into vocab.js. Exportable
+  // back into progress.json via merge_rehearse.py (does NOT auto-write the file).
+  let localState = store.load();
+  const keyOf = it => it.answer;
+  const stateOf = it => {
+    const s = localState[keyOf(it)];
+    if (s && typeof s === 'object') return { box: s.box, last: s.last||'' };
+    // legacy: localStorage used to store a bare box number
+    if (typeof s === 'number') return { box: s, last: '' };
+    return { box: it.box, last: it.last_reviewed||'' };
+  };
+  const boxOf = it => stateOf(it).box;
+  const isDue = it => {
+    const {box,last} = stateOf(it);
+    if(!last) return true;                       // never scheduled -> due
+    return daysBetween(last, todayStr()) >= (INTERVAL[box]??0);
+  };
+
+  let mode = 'write', cat = 'all', focus = 'weak';
+  let current = null, revealed = false;
+  let formIdx = 0, formAllOk = true;   // Full-forms mode: position + running correctness
+  let formResults = [];                // Full-forms: per-form true/false + what you typed
+  let session = { seen:0, correct:0, streak:0 };
+
+  // ---------- audio ----------
+  let voices = [];
+  function loadVoices(){ voices = window.speechSynthesis ? speechSynthesis.getVoices() : []; }
+  if (window.speechSynthesis){ loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
+  function cleanForSpeech(t){
+    t = t.split('(')[0];        // drop parentheticals
+    t = t.split('/')[0];        // first slash variant
+    return t.replace(/\s+/g,' ').trim();
+  }
+   function webSpeak(t){
+     if(!window.speechSynthesis) return;
+     const u = new SpeechSynthesisUtterance(t);
+     // LANGUAGE NOTE: set to your target language's BCP-47 code (e.g. de-DE, es-ES, fr-FR).
+     u.lang = 'nb-NO'; u.rate = .9;
+     const v = voices.find(v=>/nb[-_]?NO|^no\b|norsk|norweg/i.test(v.lang+' '+v.name));
+     if(v) u.voice = v;
+    speechSynthesis.cancel(); speechSynthesis.speak(u);
+  }
+  function speak(text){
+    const t = cleanForSpeech(text);
+    if(!t) return;
+    const url = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=no&client=tw-ob&q='+encodeURIComponent(t);
+    const a = new Audio(url);
+    a.play().then(()=>{ a.onerror = ()=>webSpeak(t); })
+            .catch(()=>webSpeak(t));
+  }
+
+  // ---------- normalization / checking ----------
+  function norm(s){
+    return (s||'').toLowerCase().trim()
+      .replace(/[.,!?;:"']/g,'')
+      .replace(/\s+/g,' ');
+  }
+  function isCorrect(input, item){
+    const n = norm(input);
+    if(!n) return false;
+    if(item.accept.map(norm).includes(n)) return true;
+    if(norm(item.answer) === n) return true;
+    // accept ascii transliteration typed for æøå
+    const asci = x => x.replace(/æ/g,'ae').replace(/ø/g,'oe').replace(/å/g,'aa');
+    if(item.accept.map(a=>asci(norm(a))).includes(asci(n))) return true;
+    return false;
+  }
+  // Accepted variants for a SINGLE form string like "jakka (jakken)" or "sju / syv"
+  // (mirrors parse_alternates in generate.py). Also accepts the form without a
+  // leading article, and ascii transliteration.
+  function formVariants(no){
+    const out = new Set();
+    // Also accept the WHOLE form typed as-is (covers pair forms like "dit / der"
+    // where both are valid, typed together with or without spaces around the slash).
+    if(no){
+      out.add(no.toLowerCase());
+      out.add(no.replace(/\s*\/\s*/g,'/').toLowerCase());   // "dit / der" -> "dit/der"
+      out.add(no.replace(/\s*\/\s*/g,' ').toLowerCase());   // -> "dit der"
+    }
+    (no||'').split('/').forEach(part=>{
+      part = part.trim(); if(!part) return;
+      const m = part.match(/^(.*?)\s*\(([^)]*)\)\s*$/);
+      const push = w => {
+        w = w.trim(); if(!w) return;
+        out.add(w.toLowerCase());
+        const t = w.split(/\s+/);
+        if(t.length>1 && ['en','ei','et','å','aa','to'].includes(t[0].toLowerCase()))
+          out.add(t.slice(1).join(' ').toLowerCase());   // drop leading article
+      };
+      if(m){ push(m[1]); if(/^[a-zæøåA-ZÆØÅ ]+$/.test(m[2]) && !['en','ei','et'].includes(m[2])) push(m[2]); }
+      else push(part);
+    });
+    return [...out];
+  }
+  function matchesForm(input, no){
+    const n = norm(input); if(!n) return false;
+    const asci = x => x.replace(/æ/g,'ae').replace(/ø/g,'oe').replace(/å/g,'aa');
+    return formVariants(no).some(v => norm(v)===n || asci(norm(v))===asci(n));
+  }
+
+  // ---------- selection (SRS due-driven) ----------
+  function pool(){
+    const byCat = VOCAB.filter(it => cat==='all' || it.cat===cat);
+    if(focus==='even') return byCat;              // practice anything, evenly
+    // 'weak' = spaced-repetition: only items DUE for review today, weakest first.
+    const due = byCat.filter(isDue);
+    return due.length ? due : byCat;              // nothing due -> fall back to all
+  }
+  function weightOf(it){
+    if(focus==='even') return 1;
+    const b = boxOf(it);
+    return ({1:6,2:4,3:2,4:1,5:1})[b] || 2;
+  }
+  function pick(){
+    const p = pool();
+    if(!p.length) return null;
+    let choice, guard=0;
+    do{
+      let total = p.reduce((s,it)=>s+weightOf(it),0);
+      let r = Math.random()*total;
+      choice = p[0];
+      for(const it of p){ r -= weightOf(it); if(r<=0){ choice = it; break; } }
+    } while(p.length>1 && choice===current && guard++<8);
+    return choice;
+  }
+
+  // ---------- render ----------
+  function setTag(it){
+    const b = boxOf(it);
+    const t = $('#tag');
+    t.className = 'tag box'+b;
+    const catName = {noun:'noun',verb:'verb',adj:'adjective',word:'word'}[it.cat];
+    t.textContent = catName + (it.unit? ' · '+it.unit : '') + ' · box '+b;
+  }
+  function renderForms(it){
+    const box = $('#forms'); box.innerHTML='';
+    it.forms.forEach((f,i)=>{
+      const row = document.createElement('div'); row.className='formrow';
+      const play = document.createElement('button'); play.className='miniplay'; play.textContent='▶';
+      play.onclick = ()=>speak(f.no);
+      const lbl = document.createElement('span'); lbl.className='lbl'; lbl.textContent=f.label||'';
+      const val = document.createElement('span'); val.className='val'; val.textContent=f.no;
+      row.append(play, lbl, val);
+      // Full-forms mode: mark each form ✓/✗ and show what was typed if wrong
+      if(mode==='forms' && formResults[i]){
+        const r = formResults[i];
+        const mark = document.createElement('span');
+        mark.className = 'formmark ' + (r.ok?'good':'bad');
+        mark.textContent = r.ok ? '✓' : ('✗ ' + (r.typed||'—'));
+        row.appendChild(mark);
+      }
+      box.appendChild(row);
+    });
+  }
+  function next(){
+    current = pick(); revealed=false;
+    if(!current){ $('#prompt').textContent='No words in this filter.'; return; }
+    $('#reveal').classList.remove('show');
+    $('#verdict').textContent=''; $('#verdict').className='verdict';
+    $('#answer').value=''; $('#answer').disabled=false;
+    $('#rate').style.display='none';
+    setTag(current);
+    const promptEl=$('#prompt'), spk=$('#spk'), hint=$('#hint'), form=$('#answerForm');
+
+    if(mode==='recall'){
+      // Norwegian shown, recall English
+      promptEl.textContent = current.answer; promptEl.className='prompt no';
+      spk.style.display=''; hint.textContent='What does it mean? (say it, then reveal)';
+      form.style.display='none';
+      revealNow(true);           // show forms+audio but keep English hidden until rated? -> show reveal panel w/ self-rate
+      // for recall we reveal English only after rating; simpler: show reveal with rate, English hidden
+      $('#enAnswer').style.visibility='hidden';
+      $('#rate').style.display='flex';
+    } else if(mode==='dictation'){
+      promptEl.textContent='🔊  …'; promptEl.className='prompt';
+      spk.style.display=''; hint.textContent='Listen and type what you hear (Tab to replay).';
+      form.style.display='flex';
+      setTimeout(()=>speak(current.answer), 200);
+      $('#answer').focus();
+    } else if(mode==='forms'){
+      // Full-forms drill: quiz each form of the word in turn.
+      formIdx = 0; formAllOk = true; formResults = [];
+      renderFormPrompt();
+    } else { // write
+      promptEl.textContent = current.en; promptEl.className='prompt';
+      spk.style.display='none';
+      hint.textContent = current.forms.length>1 ? 'Type the base form (article for nouns, å… for verbs).' : '';
+      form.style.display='flex';
+      $('#answer').focus();
+    }
+    updateStats();
+  }
+  // Full-forms mode: show the current form's label as the prompt, one input box.
+  function renderFormPrompt(){
+    const it=current, f=it.forms[formIdx];
+    const promptEl=$('#prompt');
+    promptEl.className='prompt';
+    promptEl.innerHTML = escapeHtml(it.en) + ' — <span class="formlabel">'
+      + escapeHtml(f.label||('form '+(formIdx+1))) + '</span>'
+      + ' <span class="formcount">('+(formIdx+1)+'/'+it.forms.length+')</span>';
+    $('#spk').style.display='none';
+    $('#hint').textContent = 'Type this form; Enter to check, then next form.';
+    $('#answerForm').style.display='flex';
+    $('#answer').value=''; $('#answer').disabled=false; $('#answer').focus();
+  }
+  function revealNow(skipEnglishReset){
+    revealed=true;
+    const it=current;
+    $('#enAnswer').style.visibility='visible';
+    $('#enAnswer').innerHTML = '<b>'+escapeHtml(it.en)+'</b>';
+    renderForms(it);
+    $('#note').textContent = it.note||'';
+    $('#reveal').classList.add('show');
+  }
+  function escapeHtml(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
+
+  function grade(correct){
+    const it=current, k=keyOf(it), b=boxOf(it);
+    // Both modes grade into the same localState buffer (Export sends it all).
+    // Modes differ only in SELECTION: 'Due for review' filters to due items;
+    // 'Even' shows everything. SRS: correct -> box+1 (max 5); wrong -> reset to 1.
+    const nb = correct ? Math.min(5,b+1) : 1;
+    localState[k] = { box: nb, last: todayStr() };
+    store.save(localState);
+    session.seen++;
+    if(correct){ session.correct++; session.streak++; } else { session.streak=0; }
+    updateStats();
+  }
+  function updateStats(){
+    const acc = session.seen? Math.round(session.correct/session.seen*100):0;
+    $('#stats').innerHTML = `<b>${session.correct}</b>/${session.seen} correct · ${acc}% · streak <b>${session.streak}</b>`;
+  }
+
+  function submitAnswer(){
+    if(mode==='recall') return;
+    if(revealed){ next(); return; }
+
+    if(mode==='forms'){
+      const it=current, f=it.forms[formIdx];
+      const typed = $('#answer').value;
+      const ok = matchesForm(typed, f.no);
+      if(!ok) formAllOk = false;
+      formResults[formIdx] = { ok, typed: typed.trim() };
+      // inline per-form verdict
+      const v=$('#verdict');
+      if(ok){ v.textContent='✓ '+f.no; v.className='verdict good'; }
+      else  { v.textContent='✗  → '+f.no; v.className='verdict bad'; }
+      formIdx++;
+      if(formIdx < it.forms.length){
+        // brief pause showing the verdict, then next form
+        $('#answer').value=''; $('#answer').focus();
+        setTimeout(()=>{ $('#verdict').textContent=''; $('#verdict').className='verdict'; renderFormPrompt(); }, 650);
+      } else {
+        // all forms done -> grade the whole word on formAllOk
+        grade(formAllOk);
+        const nOk = formResults.filter(r=>r&&r.ok).length;
+        v.textContent = formAllOk
+          ? '✓ all '+it.forms.length+' forms correct'
+          : '✗ '+nOk+'/'+it.forms.length+' correct — box reset (see below)';
+        v.className = 'verdict ' + (formAllOk?'good':'bad');
+        $('#answer').disabled=true;
+        revealNow();
+        speak(it.answer);
+        $('#nextBtn').focus();
+      }
+      return;
+    }
+
+    // write / dictation: STRICT — only the citation form (forms[0]) counts,
+    // not any inflection.
+    const val=$('#answer').value;
+    const ok = matchesForm(val, current.forms[0].no);
+    grade(ok);
+    const v=$('#verdict');
+    if(ok){ v.textContent='✓ Correct'; v.className='verdict good'; }
+    else  { v.textContent='✗  → '+current.answer; v.className='verdict bad'; }
+    $('#answer').disabled=true;
+    revealNow();
+    if(mode!=='dictation') speak(current.answer); // in dictation you just heard it
+    $('#nextBtn').focus();
+  }
+
+  // ---------- events ----------
+  $('#answerForm').addEventListener('submit', e=>{ e.preventDefault(); submitAnswer(); });
+  $('#nextBtn').addEventListener('click', next);
+  $('#spk').addEventListener('click', ()=>current&&speak(current.answer));
+  $('#rate').addEventListener('click', e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    grade(b.dataset.know==='1'); next();
+  });
+  document.addEventListener('keydown', e=>{
+    if(e.key==='Tab' && (mode==='dictation'||mode==='recall')){ e.preventDefault(); current&&speak(current.answer); }
+    else if(e.key==='Escape'){ e.preventDefault(); if(!revealed && mode!=='recall'){ grade(false); $('#verdict').textContent='→ '+current.answer; $('#verdict').className='verdict bad'; revealNow(); speak(current.answer);} }
+    else if(e.key==='Enter' && mode==='recall'){ /* handled by rate */ }
+  });
+  document.querySelectorAll('#mode button').forEach(b=>b.onclick=()=>{
+    document.querySelectorAll('#mode button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); mode=b.dataset.mode; next();
+  });
+  document.querySelectorAll('#focus button').forEach(b=>b.onclick=()=>{
+    document.querySelectorAll('#focus button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); focus=b.dataset.focus;
+  });
+  $('#cat').addEventListener('change', e=>{ cat=e.target.value; next(); });
+
+  // ---------- export progress (to merge back into progress.json) ----------
+  $('#exportBtn').addEventListener('click', ()=>{
+    // one row per practiced item: the Norwegian answer, resulting box, and date.
+    // include en/cat so merge_rehearse.py can CREATE a well-formed vocab item if the
+    // word isn't tracked in progress.json yet. Matched by Norwegian token overlap.
+    const byAnswer = {};
+    VOCAB.forEach(it => { byAnswer[it.answer] = it; });
+    const rows = Object.entries(localState).map(([answer, s])=>{
+      const it = byAnswer[answer] || {};
+      return {
+        answer,
+        en: it.en || '',
+        cat: it.cat || 'word',
+        box: (typeof s==='object'? s.box : s),
+        last_reviewed: (typeof s==='object'? (s.last||'') : '')
+      };
+    });
+    const payload = { exported_on: todayStr(), source: 'rehearse-app', items: rows };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'rehearse-progress-'+todayStr()+'.json';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+
+  // go
+  next();
+})();
+</script>
+</body>
+</html>
