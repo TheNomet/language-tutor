@@ -8,13 +8,13 @@ description: Add or update click-to-hear pronunciation audio for target-language
 Give the learner inline click-to-hear audio for target-language words/phrases **inside
 Obsidian** — no switching to a browser. The mechanism: download a TTS mp3 into the vault
 and embed it with Obsidian's audio-embed syntax `![[audio/<file>.mp3]]`, which renders an
-inline play button on desktop and phone (mp3s iCloud-sync like the notes).
+inline play button on desktop and phone (the mp3s sync alongside the notes).
 
 ## Paths
 
-- The OPEN Obsidian vault IS the language folder itself (it has its own `.obsidian/`),
-  NOT the parent documents folder. Read the vault root from `tracking/profile.json`
-  (`vault_path`). `![[audio/x.mp3]]` and the CSS snippet resolve relative to that root.
+- The Obsidian vault IS the language folder itself (it has its own `.obsidian/`). Read the
+  vault root from `tracking/profile.json` → `vault_path` — never hardcode it.
+  `![[audio/x.mp3]]` and the CSS snippet resolve relative to that root.
 - Audio folder (create if missing): `<vault>/audio/`
 - CSS snippet: `<vault>/.obsidian/snippets/tutor-audio.css` (use the language-folder
   vault, not the parent documents folder — wrong vault).

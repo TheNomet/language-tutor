@@ -37,7 +37,7 @@
     "new_situations": "Rotate contexts (work, weather, shopping, friends, city, ...) so examples stay fresh rather than anchoring everything on one topic."
   },
   "ai_setup": "Built for Claude (CLAUDE.md + .claude/skills). Any agent that can read this repo can be the tutor.",
-  "vault_path": "TODO — absolute path to your Obsidian language folder, set by the tutor-setup skill. e.g. /Users/you/Library/Mobile Documents/iCloud~md~obsidian/Documents/<vault>/<Language>",
+  "vault_path": "TODO — absolute path to your Obsidian language folder on THIS computer (macOS/Windows/Linux). Set by the tutor-setup skill; find it in Obsidian via 'Open vault folder'.",
   "tts_lang": "TODO — Google TTS language code for the target language (e.g. no, de, es, fr, it), set by tutor-setup.",
   "grammar_sources": [
     "TODO — authoritative online grammar for the target language, set by tutor-setup.",

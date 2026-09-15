@@ -70,12 +70,21 @@ Verify any grammar claims you're unsure of against the `grammar_sources` before 
 
 ## Step 4 — Create the Obsidian vault
 
-Decide the vault path with the learner. Default (iCloud-synced, reaches phone):
-`~/Library/Mobile Documents/iCloud~md~obsidian/Documents/<VaultName>/<LanguageFolder>/`
-The `<LanguageFolder>` itself is the Obsidian vault (it gets its own `.obsidian/`). If
-they already have a vault, create a `<LanguageFolder>` inside it instead.
+First get the vault location from the learner — **do not assume a path** (they may be on
+macOS, Windows, or Linux, with or without iCloud):
 
-Write the absolute path into `profile.json` → `vault_path`, then create:
+- If they already use Obsidian, ask them to open it and copy the vault folder's path
+  (in Obsidian: the vault name → "Open vault folder", or check Settings → About). Create
+  a `<LanguageFolder>` inside that vault for this study material.
+- If they don't, ask where they'd like it and have them create/choose a folder. To sync
+  to their phone they can put it under whatever cloud folder they use (iCloud Drive,
+  Dropbox, etc.) and open it as a vault in the Obsidian app — but that's their choice, not
+  a required path.
+
+Confirm the absolute path with them, then write it into `profile.json` → `vault_path`.
+The `<LanguageFolder>` you use IS the Obsidian vault (it gets its own `.obsidian/`).
+
+Then create, inside `vault_path`:
 
 - `<vault>/index.md` — links to `grammar/grammar-index.md` and (as they're created) each
   `unit-X.Y.md`.
@@ -96,8 +105,8 @@ audio plugin/CSS snippet described in `tutor-pronunciation` (not required to sta
 
 ## Step 5 — Point tooling at the vault
 
-- `rehearse/generate.py`: set the `VAULT` path near the top to the same `vault_path`
-  (replace the `/CHANGE-ME/...` placeholder).
+- `rehearse/generate.py` reads `vault_path` from `profile.json` automatically — nothing to
+  edit, as long as `vault_path` is set (Step 4). (It also accepts a `VAULT_PATH` env var.)
 - Leave `tracking/progress.json` as the empty scaffold — the first session fills it. Set
   `current.unit` to the first unit of the freshly-written plan and
   `vocabulary.baseline_known_estimate` to a rough guess of words they already know.

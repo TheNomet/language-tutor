@@ -22,16 +22,33 @@ tutor's own warm-up already drives spaced repetition from progress.json.
 
 
 import json
+import os
 import re
 import unicodedata
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
-# TODO: point this at YOUR Obsidian vault's language folder (see the tutor-obsidian skill / profile.json vault_path).
-VAULT = Path(
-    "/CHANGE-ME/Library/Mobile Documents/iCloud~md~obsidian/"
-    "Documents/your_vault/YourLanguage"
-)
+
+# Vault location: read from tracking/profile.json ("vault_path"), or the VAULT_PATH env
+# var. No path is hardcoded — it works on macOS/Windows/Linux once vault_path is set by
+# the tutor-setup skill.
+def _resolve_vault() -> Path:
+    env = os.environ.get("VAULT_PATH")
+    if env:
+        return Path(env).expanduser()
+    try:
+        prof = json.loads((REPO / "tracking" / "profile.json").read_text())
+        vp = prof.get("vault_path", "")
+        if vp and not vp.startswith("TODO"):
+            return Path(vp).expanduser()
+    except Exception:
+        pass
+    raise SystemExit(
+        "No vault path. Set profile.json 'vault_path' (run tutor-setup) or export "
+        "VAULT_PATH=/path/to/your/Obsidian/LanguageFolder"
+    )
+
+VAULT = _resolve_vault()
 GRAMMAR = VAULT / "grammar"
 OUT = REPO / "rehearse" / "vocab.js"
 

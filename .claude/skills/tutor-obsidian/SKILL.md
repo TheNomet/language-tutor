@@ -5,14 +5,13 @@ description: Owns the Obsidian vault write-back for the learner's study — the 
 
 # tutor-obsidian — the vault write-back
 
-This skill owns the learner's review material in their iCloud-synced Obsidian vault (so
-it reaches their phone). The tutor delegates all vault edits here.
+This skill owns the learner's review material in their Obsidian vault (kept in sync so it
+reaches their phone). The tutor delegates all vault edits here.
 
-**Vault root.** The `tutor-setup` skill records the absolute path to the vault folder in
-`tracking/profile.json` under `vault_path`. Read it from there. It looks like:
-`/Users/<you>/Library/Mobile Documents/iCloud~md~obsidian/Documents/<vault>/<LanguageFolder>/`
-The `<LanguageFolder>` IS the Obsidian vault (it has its own `.obsidian/`). If
-`vault_path` is missing, the repo isn't set up — run `tutor-setup` first.
+**Vault root.** Read the absolute path from `tracking/profile.json` → `vault_path`. That
+folder IS the Obsidian vault (it has its own `.obsidian/`). Never hardcode a path here;
+always read `vault_path`. If it's missing or still a `TODO` placeholder, the repo isn't
+set up — run `tutor-setup` first.
 
 Three layers, kept strictly separated — **no exercises, no session chatter**, just
 vocabulary + grammar + forms:
