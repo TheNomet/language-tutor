@@ -107,7 +107,7 @@ audio plugin/CSS snippet described in `tutor-pronunciation` (not required to sta
 - Run `python3 .claude/skills/tutor-progress/scripts/validate.py --today <today>` — fix
   any ERROR.
 - Confirm `profile.json` and `plan.md` have no leftover `TODO`/`<...>` placeholders.
-- Tell the learner setup is done and that next time they just say "run today's session".
+- Tell the learner setup is done and that next time they just run `/session`.
   Then either start Session 1 or stop, per their preference.
 
 Do not run `tutor-setup` again after this; ongoing sessions use `tutor-progress` and

@@ -14,24 +14,31 @@ contain placeholders — the one-time **setup** step fills them in for your lang
 
 ## How it works
 
-1. Open Claude (Claude Code / the app) **in this folder**.
-2. First time only: it runs **`tutor-setup`** — interviews you, writes your profile and a
+1. Open Claude (Claude Code) **in this folder**.
+2. First time only: run **`/tutor-setup`** — it interviews you, writes your profile and a
    learning plan for your language, and creates your Obsidian review vault.
-3. Each session it reads the **fixed plan**, your **profile**, and your **live progress**,
-   runs a short lesson (review → new material → speaking → logging), and **writes your
-   progress back** so next time it knows exactly where you are and what you keep missing.
+3. Each session run **`/session`**: it reads the **fixed plan**, your **profile**, and
+   your **live progress**, runs a short lesson (review → new material → speaking →
+   logging), and **writes your progress back** so next time it knows exactly where you
+   are and what you keep missing.
 
 ## First run
 
-Open Claude in this folder and say:
+Open Claude Code in this folder and run:
 
-> "Set me up as a new learner — run the tutor-setup skill."
+> `/tutor-setup`
 
-Answer its questions (your language, goal, level, how you like to learn). After that,
-every session is just:
+Answer its questions (your language, goal, level, how you like to learn). It writes your
+profile, a learning plan for your language, and your Obsidian review vault.
 
-> "You are my language tutor. Read your instructions and my tracking files, then run
-> today's session."
+## Every session after that
+
+> `/session`
+
+That's it. Claude auto-reads `CLAUDE.md` on launch, and `/session` tells it to read your
+tracking files and run today's lesson. (You can still just say "run today's session" in
+plain words — the command is only a shortcut. Pass extra instructions after it, e.g.
+`/session let's do a conversation day`.)
 
 ## What's in here
 
@@ -39,12 +46,15 @@ every session is just:
 .
 ├── README.md              ← you are here
 ├── CLAUDE.md              ← the tutor's instructions (the brain); Claude auto-reads this
-├── .claude/skills/        ← the skills the tutor uses
-│   ├── tutor-setup/       ← FIRST-RUN bootstrap (profile + plan + vault)
-│   ├── tutor-progress/    ← owns tracking write-back (Leitner boxes) + validator
-│   ├── tutor-srs/         ← the spaced-repetition spec (Leitner + SM-2)
-│   ├── tutor-obsidian/    ← owns the Obsidian vault write-back (grammar + vocab)
-│   └── tutor-pronunciation/ ← click-to-hear audio in Obsidian
+├── .claude/
+│   ├── commands/
+│   │   └── session.md     ← the /session shortcut to run today's lesson
+│   └── skills/            ← the skills the tutor uses
+│       ├── tutor-setup/       ← FIRST-RUN bootstrap (/tutor-setup): profile + plan + vault
+│       ├── tutor-progress/    ← owns tracking write-back (Leitner boxes) + validator
+│       ├── tutor-srs/         ← the spaced-repetition spec (Leitner + SM-2)
+│       ├── tutor-obsidian/    ← owns the Obsidian vault write-back (grammar + vocab)
+│       └── tutor-pronunciation/ ← click-to-hear audio in Obsidian
 ├── curriculum/
 │   └── plan.md            ← the fixed A1→A2→B1 plan (template; filled by setup). Never edited after.
 ├── tracking/              ← your memory (filled as you learn)
